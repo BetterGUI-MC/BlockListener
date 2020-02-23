@@ -1,8 +1,8 @@
 package me.hsgamer.bettergui.blocklistener;
 
+import static me.hsgamer.bettergui.BetterGUI.getInstance;
 import static me.hsgamer.bettergui.blocklistener.Main.getStorage;
 
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.Location;
@@ -22,10 +22,10 @@ public class BlockListener implements Listener {
         Location loc = block.getLocation();
         if (getStorage().contains(loc)) {
           String menu = getStorage().getMenuFromLocation(loc);
-          if (BetterGUI.getInstance().getMenuManager().contains(menu)) {
-            BetterGUI.getInstance().getMenuManager().openMenu(menu, player);
+          if (getInstance().getMenuManager().contains(menu)) {
+            getInstance().getMenuManager().openMenu(menu, player);
           } else {
-            CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(
+            CommonUtils.sendMessage(player, getInstance().getMessageConfig().get(
                 DefaultMessage.MENU_NOT_FOUND));
           }
         }
