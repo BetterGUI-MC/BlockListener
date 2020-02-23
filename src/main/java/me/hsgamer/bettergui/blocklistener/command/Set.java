@@ -24,7 +24,7 @@ public class Set extends BukkitCommand {
     if (commandSender instanceof Player) {
       if (commandSender.hasPermission(Permissions.SET)) {
         if (strings.length > 0) {
-          String menu = strings[1];
+          String menu = strings[0];
           Block block = ((Player) commandSender).getTargetBlock(null, 5);
           if (block != null) {
             Location loc = block.getLocation();
