@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 public class Remove extends BukkitCommand {
 
   public Remove() {
-    super("removeblockmenu", "Remove the linked block", "removeblockmenu",
+    super("removeblockmenu", "Remove the linked block", "/removeblockmenu",
         Arrays.asList("removebmenu", "rbm"));
   }
 

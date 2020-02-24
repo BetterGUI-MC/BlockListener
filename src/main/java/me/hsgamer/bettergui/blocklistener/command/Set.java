@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 public class Set extends BukkitCommand {
 
   public Set() {
-    super("setblockmenu", "Link the target block to a menu", "setblockmenu <menu>",
+    super("setblockmenu", "Link the target block to a menu", "/setblockmenu <menu>",
         Arrays.asList("setbmenu", "blockmenu", "sbm"));
   }
 

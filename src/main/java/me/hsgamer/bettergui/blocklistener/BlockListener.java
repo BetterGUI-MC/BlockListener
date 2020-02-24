@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class BlockListener implements Listener {
+
   @EventHandler
   public void onInteract(PlayerInteractEvent event) {
     Player player = event.getPlayer();
