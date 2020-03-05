@@ -3,12 +3,10 @@ package me.hsgamer.bettergui.blocklistener;
 import me.hsgamer.bettergui.blocklistener.command.Remove;
 import me.hsgamer.bettergui.blocklistener.command.Set;
 import me.hsgamer.bettergui.object.addon.Addon;
-import org.bukkit.event.HandlerList;
 
 public final class Main extends Addon {
 
   private static BlockStorage storage;
-  private BlockListener listener;
 
   private Set setCommand;
   private Remove removeCommand;
@@ -20,8 +18,7 @@ public final class Main extends Addon {
   @Override
   public boolean onLoad() {
     setupConfig();
-    listener = new BlockListener();
-    getPlugin().getServer().getPluginManager().registerEvents(listener, getPlugin());
+    registerListener(new BlockListener());
 
     getPlugin().getMessageConfig().getConfig()
         .addDefault("location-not-found", "&cThe location is not found");
@@ -46,7 +43,6 @@ public final class Main extends Addon {
   @Override
   public void onDisable() {
     storage.save();
-    HandlerList.unregisterAll(listener);
     unregisterCommand(setCommand);
     unregisterCommand(removeCommand);
   }
