@@ -24,7 +24,7 @@ public class BlockListener implements Listener {
         if (getStorage().contains(loc)) {
           String menu = getStorage().getMenuFromLocation(loc);
           if (getInstance().getMenuManager().contains(menu)) {
-            getInstance().getMenuManager().openMenu(menu, player);
+            getInstance().getMenuManager().openMenu(menu, player, false);
           } else {
             CommonUtils.sendMessage(player, getInstance().getMessageConfig().get(
                 DefaultMessage.MENU_NOT_FOUND));
