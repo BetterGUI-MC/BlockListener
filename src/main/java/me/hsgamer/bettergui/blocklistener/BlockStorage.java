@@ -23,12 +23,13 @@ public class BlockStorage {
   @SuppressWarnings("unchecked")
   public void load() {
     config.getKeys(false).forEach(s -> config.getMapList(s)
-        .forEach(map -> locToMenuMap.put(Location.deserialize((Map<String, Object>) map), s)));
+        .forEach(map -> locToMenuMap.put(Location.deserialize((Map<String, Object>) map), s + ".yml")));
   }
 
   public void save() {
     Map<String, List<Map<String, Object>>> map = new HashMap<>();
     locToMenuMap.forEach((loc, s) -> {
+      s = s.replace(".yml", "");
       if (!map.containsKey(s)) {
         map.put(s, new ArrayList<>());
       }
