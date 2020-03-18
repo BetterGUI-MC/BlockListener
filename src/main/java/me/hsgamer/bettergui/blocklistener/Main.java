@@ -46,4 +46,10 @@ public final class Main extends Addon {
     unregisterCommand(setCommand);
     unregisterCommand(removeCommand);
   }
+
+  @Override
+  public void onReload() {
+    storage.save();
+    storage.load();
+  }
 }
