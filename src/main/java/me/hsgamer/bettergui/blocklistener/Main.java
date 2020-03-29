@@ -8,9 +8,6 @@ public final class Main extends Addon {
 
   private static BlockStorage storage;
 
-  private Set setCommand;
-  private Remove removeCommand;
-
   public static BlockStorage getStorage() {
     return storage;
   }
@@ -34,17 +31,13 @@ public final class Main extends Addon {
   @Override
   public void onEnable() {
     storage = new BlockStorage(this);
-    setCommand = new Set();
-    removeCommand = new Remove();
-    registerCommand(setCommand);
-    registerCommand(removeCommand);
+    registerCommand(new Set());
+    registerCommand(new Remove());
   }
 
   @Override
   public void onDisable() {
     storage.save();
-    unregisterCommand(setCommand);
-    unregisterCommand(removeCommand);
   }
 
   @Override
