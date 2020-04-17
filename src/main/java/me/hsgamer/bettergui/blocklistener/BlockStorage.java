@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import me.hsgamer.bettergui.object.addon.Addon;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class BlockStorage {
 
-  private Map<Location, String> locToMenuMap = new HashMap<>();
-  private Addon addon;
-  private FileConfiguration config;
+  private final Map<InteractiveLocation, String> locToMenuMap = new HashMap<>();
+  private final Addon addon;
+  private final FileConfiguration config;
 
   public BlockStorage(Addon addon) {
     this.addon = addon;
@@ -23,7 +24,8 @@ public class BlockStorage {
   @SuppressWarnings("unchecked")
   public void load() {
     config.getKeys(false).forEach(s -> config.getMapList(s)
-        .forEach(map -> locToMenuMap.put(Location.deserialize((Map<String, Object>) map), s + ".yml")));
+        .forEach(map -> locToMenuMap
+            .put(InteractiveLocation.deserialize((Map<String, Object>) map), s + ".yml")));
   }
 
   public void save() {
@@ -39,19 +41,21 @@ public class BlockStorage {
     addon.saveConfig();
   }
 
-  public void set(Location loc, String menu) {
+  public void set(InteractiveLocation loc, String menu) {
     locToMenuMap.put(loc, menu);
   }
 
   public void remove(Location loc) {
-    locToMenuMap.remove(loc);
+    locToMenuMap.entrySet().removeIf(entry -> entry.getKey().getLocation().equals(loc));
+    save();
   }
 
   public boolean contains(Location loc) {
-    return locToMenuMap.containsKey(loc);
+    return getMenuFromLocation(loc).isPresent();
   }
 
-  public String getMenuFromLocation(Location loc) {
-    return locToMenuMap.get(loc);
+  public Optional<Map.Entry<InteractiveLocation, String>> getMenuFromLocation(Location loc) {
+    return locToMenuMap.entrySet().stream()
+        .filter(entry -> entry.getKey().getLocation().equals(loc)).findFirst();
   }
 }

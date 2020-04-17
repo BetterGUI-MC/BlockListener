@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.blocklistener.command;
 
 import java.util.Arrays;
 import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.blocklistener.InteractiveLocation;
 import me.hsgamer.bettergui.blocklistener.Main;
 import me.hsgamer.bettergui.blocklistener.Permissions;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
@@ -15,7 +16,7 @@ import org.bukkit.entity.Player;
 public class Set extends BukkitCommand {
 
   public Set() {
-    super("setblockmenu", "Link the target block to a menu", "/setblockmenu <menu>",
+    super("setblockmenu", "Link the target block to a menu", "/setblockmenu <menu> [args]",
         Arrays.asList("setbmenu", "blockmenu", "sbm"));
   }
 
@@ -29,7 +30,12 @@ public class Set extends BukkitCommand {
           if (block != null) {
             Location loc = block.getLocation();
             if (!Main.getStorage().contains(loc)) {
-              Main.getStorage().set(loc, menu);
+              InteractiveLocation interactiveLocation = new InteractiveLocation(loc);
+              if (strings.length >= 2) {
+                interactiveLocation
+                    .setArgs(Arrays.asList(Arrays.copyOfRange(strings, 1, strings.length)));
+              }
+              Main.getStorage().set(interactiveLocation, menu);
               CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
                   DefaultMessage.SUCCESS));
               return true;
