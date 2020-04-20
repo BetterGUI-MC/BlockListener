@@ -7,23 +7,20 @@ import java.util.Map;
 import java.util.Optional;
 import me.hsgamer.bettergui.object.addon.Addon;
 import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
 
 public class BlockStorage {
 
   private final Map<InteractiveLocation, String> locToMenuMap = new HashMap<>();
   private final Addon addon;
-  private final FileConfiguration config;
 
   public BlockStorage(Addon addon) {
     this.addon = addon;
-    this.config = addon.getConfig();
     load();
   }
 
   @SuppressWarnings("unchecked")
   public void load() {
-    config.getKeys(false).forEach(s -> config.getMapList(s)
+    addon.getConfig().getKeys(false).forEach(s -> addon.getConfig().getMapList(s)
         .forEach(map -> locToMenuMap
             .put(InteractiveLocation.deserialize((Map<String, Object>) map), s + ".yml")));
   }
@@ -37,7 +34,7 @@ public class BlockStorage {
       }
       map.get(s).add(loc.serialize());
     });
-    map.forEach(config::set);
+    map.forEach((s, list) -> addon.getConfig().set(s, list));
     addon.saveConfig();
   }
 
