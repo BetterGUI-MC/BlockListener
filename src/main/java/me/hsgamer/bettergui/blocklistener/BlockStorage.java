@@ -10,7 +10,8 @@ import org.bukkit.Location;
 
 public class BlockStorage {
 
-  private final Map<InteractiveLocation, String> locToMenuMap = new HashMap<>();
+  private final Map<Location, String> locToMenuMap = new HashMap<>();
+  private final Map<Location, String> locToArgsMap = new HashMap<>();
   private final Addon addon;
 
   public BlockStorage(Addon addon) {
@@ -21,18 +22,28 @@ public class BlockStorage {
   @SuppressWarnings("unchecked")
   public void load() {
     addon.getConfig().getKeys(false).forEach(s -> addon.getConfig().getMapList(s)
-        .forEach(map -> locToMenuMap
-            .put(InteractiveLocation.deserialize((Map<String, Object>) map), s + ".yml")));
+        .forEach(map -> {
+          Location location = Location.deserialize((Map<String, Object>) map);
+          locToMenuMap.put(location, s + ".yml");
+          if (map.containsKey("args")) {
+            locToArgsMap.put(location, (String) map.get("args"));
+          }
+        }));
   }
 
   public void save() {
     Map<String, List<Map<String, Object>>> map = new HashMap<>();
     locToMenuMap.forEach((loc, s) -> {
       s = s.replace(".yml", "");
+      Map<String, Object> serialized = loc.serialize();
+      if (locToArgsMap.containsKey(loc)) {
+        serialized.put("args", locToArgsMap.get(loc));
+      }
+
       if (!map.containsKey(s)) {
         map.put(s, new ArrayList<>());
       }
-      map.get(s).add(loc.serialize());
+      map.get(s).add(serialized);
     });
 
     // Clear old config
@@ -42,20 +53,31 @@ public class BlockStorage {
     addon.saveConfig();
   }
 
-  public void set(InteractiveLocation loc, String menu) {
+  public void set(Location loc, String menu) {
     locToMenuMap.put(loc, menu);
   }
 
+  public void setArgs(Location loc, String args) {
+    locToArgsMap.put(loc, args);
+  }
+
   public void remove(Location loc) {
-    locToMenuMap.entrySet().removeIf(entry -> entry.getKey().getLocation().equals(loc));
+    locToMenuMap.remove(loc);
+    locToArgsMap.remove(loc);
   }
 
   public boolean contains(Location loc) {
     return getMenuFromLocation(loc).isPresent();
   }
 
-  public Optional<Map.Entry<InteractiveLocation, String>> getMenuFromLocation(Location loc) {
-    return locToMenuMap.entrySet().stream()
-        .filter(entry -> entry.getKey().getLocation().equals(loc)).findFirst();
+  public Optional<String> getMenuFromLocation(Location loc) {
+    return Optional.ofNullable(locToMenuMap.get(loc));
+  }
+
+  public String[] getArgsFromLocation(Location loc) {
+    if (locToArgsMap.containsKey(loc)) {
+      return locToArgsMap.get(loc).split(" ");
+    }
+    return new String[0];
   }
 }
