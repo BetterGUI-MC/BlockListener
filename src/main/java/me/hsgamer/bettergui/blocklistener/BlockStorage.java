@@ -34,6 +34,10 @@ public class BlockStorage {
       }
       map.get(s).add(loc.serialize());
     });
+
+    // Clear old config
+    addon.getConfig().getKeys(false).forEach(s -> addon.getConfig().set(s, null));
+
     map.forEach((s, list) -> addon.getConfig().set(s, list));
     addon.saveConfig();
   }
@@ -44,7 +48,6 @@ public class BlockStorage {
 
   public void remove(Location loc) {
     locToMenuMap.entrySet().removeIf(entry -> entry.getKey().getLocation().equals(loc));
-    save();
   }
 
   public boolean contains(Location loc) {
