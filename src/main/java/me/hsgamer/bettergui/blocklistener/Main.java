@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.blocklistener;
 import me.hsgamer.bettergui.blocklistener.command.Remove;
 import me.hsgamer.bettergui.blocklistener.command.Set;
 import me.hsgamer.bettergui.object.addon.Addon;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 public final class Main extends Addon {
 
@@ -14,6 +15,7 @@ public final class Main extends Addon {
 
   @Override
   public boolean onLoad() {
+    ConfigurationSerialization.registerClass(InteractiveLocation.class);
     setupConfig();
     registerListener(new BlockListener());
 
