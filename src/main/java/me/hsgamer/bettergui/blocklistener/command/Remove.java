@@ -21,34 +21,32 @@ public class Remove extends BukkitCommand {
 
   @Override
   public boolean execute(CommandSender commandSender, String s, String[] strings) {
-    if (commandSender instanceof Player) {
-      if (commandSender.hasPermission(Permissions.REMOVE)) {
-        Block block = ((Player) commandSender).getTargetBlock(null, 5);
-        if (block != null) {
-          Location loc = block.getLocation();
-          if (Main.getStorage().contains(loc)) {
-            Main.getStorage().remove(loc);
-            CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-                DefaultMessage.SUCCESS));
-            return true;
-          } else {
-            CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-                String.class, "location-not-found", "&cThe location is not found"));
-            return false;
-          }
-        } else {
-          CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-              String.class, "block-required", "&cYou should look at a block"));
-          return false;
-        }
+    if (!(commandSender instanceof Player)) {
+      CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
+          DefaultMessage.PLAYER_ONLY));
+      return false;
+    }
+    if (!commandSender.hasPermission(Permissions.REMOVE)) {
+      CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
+          DefaultMessage.NO_PERMISSION));
+      return false;
+    }
+    Block block = ((Player) commandSender).getTargetBlock(null, 5);
+    if (block != null) {
+      Location loc = block.getLocation();
+      if (Main.getStorage().contains(loc)) {
+        Main.getStorage().remove(loc);
+        CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
+            DefaultMessage.SUCCESS));
+        return true;
       } else {
         CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-            DefaultMessage.NO_PERMISSION));
+            String.class, "location-not-found", "&cThe location is not found"));
         return false;
       }
     } else {
       CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-          DefaultMessage.PLAYER_ONLY));
+          String.class, "block-required", "&cYou should look at a block"));
       return false;
     }
   }

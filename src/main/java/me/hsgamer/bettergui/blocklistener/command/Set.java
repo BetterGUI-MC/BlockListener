@@ -22,46 +22,43 @@ public class Set extends BukkitCommand {
 
   @Override
   public boolean execute(CommandSender commandSender, String s, String[] strings) {
-    if (commandSender instanceof Player) {
-      if (commandSender.hasPermission(Permissions.SET)) {
-        if (strings.length > 0) {
-          String menu = strings[0];
-          Block block = ((Player) commandSender).getTargetBlock(null, 5);
-          if (block != null) {
-            Location loc = block.getLocation();
-            if (!Main.getStorage().contains(loc)) {
-              InteractiveLocation interactiveLocation = new InteractiveLocation(loc);
-              if (strings.length >= 2) {
-                interactiveLocation
-                    .setArgs(Arrays.asList(Arrays.copyOfRange(strings, 1, strings.length)));
-              }
-              Main.getStorage().set(interactiveLocation, menu);
-              CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-                  DefaultMessage.SUCCESS));
-              return true;
-            } else {
-              CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-                  String.class, "location-already-set", "&cThe location is already set"));
-              return false;
-            }
-          } else {
-            CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-                String.class, "block-required", "&cYou should look at a block"));
-            return false;
-          }
-        } else {
-          CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-              DefaultMessage.MENU_REQUIRED));
-          return false;
+    if (!(commandSender instanceof Player)) {
+      CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
+          DefaultMessage.PLAYER_ONLY));
+      return false;
+    }
+    if (!commandSender.hasPermission(Permissions.SET)) {
+      CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
+          DefaultMessage.NO_PERMISSION));
+      return false;
+    }
+    if (strings.length <= 0) {
+      CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
+          DefaultMessage.MENU_REQUIRED));
+      return false;
+    }
+    String menu = strings[0];
+    Block block = ((Player) commandSender).getTargetBlock(null, 5);
+    if (block != null) {
+      Location loc = block.getLocation();
+      if (!Main.getStorage().contains(loc)) {
+        InteractiveLocation interactiveLocation = new InteractiveLocation(loc);
+        if (strings.length >= 2) {
+          interactiveLocation
+              .setArgs(Arrays.asList(Arrays.copyOfRange(strings, 1, strings.length)));
         }
+        Main.getStorage().set(interactiveLocation, menu);
+        CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
+            DefaultMessage.SUCCESS));
+        return true;
       } else {
         CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-            DefaultMessage.NO_PERMISSION));
+            String.class, "location-already-set", "&cThe location is already set"));
         return false;
       }
     } else {
       CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-          DefaultMessage.PLAYER_ONLY));
+          String.class, "block-required", "&cYou should look at a block"));
       return false;
     }
   }
