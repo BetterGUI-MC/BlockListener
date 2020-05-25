@@ -1,10 +1,9 @@
 package me.hsgamer.bettergui.blocklistener.command;
 
 import java.util.Arrays;
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.blocklistener.Main;
 import me.hsgamer.bettergui.blocklistener.Permissions;
-import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -22,13 +21,11 @@ public class Remove extends BukkitCommand {
   @Override
   public boolean execute(CommandSender commandSender, String s, String[] strings) {
     if (!(commandSender instanceof Player)) {
-      CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-          DefaultMessage.PLAYER_ONLY));
+      CommonUtils.sendMessage(commandSender, MessageConfig.PLAYER_ONLY.getValue());
       return false;
     }
     if (!commandSender.hasPermission(Permissions.REMOVE)) {
-      CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-          DefaultMessage.NO_PERMISSION));
+      CommonUtils.sendMessage(commandSender, MessageConfig.NO_PERMISSION.getValue());
       return false;
     }
     Block block = ((Player) commandSender).getTargetBlock(null, 5);
@@ -36,17 +33,14 @@ public class Remove extends BukkitCommand {
       Location loc = block.getLocation();
       if (Main.getStorage().contains(loc)) {
         Main.getStorage().remove(loc);
-        CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-            DefaultMessage.SUCCESS));
+        CommonUtils.sendMessage(commandSender, MessageConfig.SUCCESS.getValue());
         return true;
       } else {
-        CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-            String.class, "location-not-found", "&cThe location is not found"));
+        CommonUtils.sendMessage(commandSender, Main.LOC_NOT_FOUND.getValue());
         return false;
       }
     } else {
-      CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-          String.class, "block-required", "&cYou should look at a block"));
+      CommonUtils.sendMessage(commandSender, Main.BLOCK_REQUIRED.getValue());
       return false;
     }
   }
