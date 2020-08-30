@@ -2,7 +2,7 @@
 Menu on blocks
 
 ## Included
-* Commands:
+* Pluin Commands:
   * `/setblockmenu` *(Permissions: `bettergui.setblock`)*
   * `/removeblockmenu` *(Permissions: `bettergui.removeblock`)*
   
