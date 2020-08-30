@@ -2,16 +2,16 @@ package me.hsgamer.bettergui.blocklistener;
 
 import me.hsgamer.bettergui.blocklistener.command.Remove;
 import me.hsgamer.bettergui.blocklistener.command.Set;
-import me.hsgamer.bettergui.config.ConfigPath;
 import me.hsgamer.bettergui.object.addon.Addon;
+import me.hsgamer.bettergui.util.config.path.StringConfigPath;
 
 public final class Main extends Addon {
 
-  public static final ConfigPath<String> LOC_NOT_FOUND = new ConfigPath<>(String.class,
+  public static final StringConfigPath LOC_NOT_FOUND = new StringConfigPath(
       "location-not-found", "&cThe location is not found");
-  public static final ConfigPath<String> LOC_ALREADY_SET = new ConfigPath<>(String.class,
+  public static final StringConfigPath LOC_ALREADY_SET = new StringConfigPath(
       "location-already-set", "&cThe location is already set");
-  public static final ConfigPath<String> BLOCK_REQUIRED = new ConfigPath<>(String.class,
+  public static final StringConfigPath BLOCK_REQUIRED = new StringConfigPath(
       "block-required", "&cYou should look at a block");
 
   private static BlockStorage storage;

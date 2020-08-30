@@ -3,8 +3,8 @@ package me.hsgamer.bettergui.blocklistener.command;
 import java.util.Arrays;
 import me.hsgamer.bettergui.blocklistener.Main;
 import me.hsgamer.bettergui.blocklistener.Permissions;
-import me.hsgamer.bettergui.config.impl.MessageConfig;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.bettergui.config.MessageConfig;
+import me.hsgamer.bettergui.util.MessageUtils;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -21,15 +21,15 @@ public class Set extends BukkitCommand {
   @Override
   public boolean execute(CommandSender commandSender, String s, String[] strings) {
     if (!(commandSender instanceof Player)) {
-      CommonUtils.sendMessage(commandSender, MessageConfig.PLAYER_ONLY.getValue());
+      MessageUtils.sendMessage(commandSender, MessageConfig.PLAYER_ONLY.getValue());
       return false;
     }
     if (!commandSender.hasPermission(Permissions.SET)) {
-      CommonUtils.sendMessage(commandSender, MessageConfig.NO_PERMISSION.getValue());
+      MessageUtils.sendMessage(commandSender, MessageConfig.NO_PERMISSION.getValue());
       return false;
     }
     if (strings.length <= 0) {
-      CommonUtils.sendMessage(commandSender, MessageConfig.MENU_REQUIRED.getValue());
+      MessageUtils.sendMessage(commandSender, MessageConfig.MENU_REQUIRED.getValue());
       return false;
     }
     String menu = strings[0];
@@ -42,14 +42,14 @@ public class Set extends BukkitCommand {
               .setArgs(loc, String.join(" ", Arrays.copyOfRange(strings, 1, strings.length)));
         }
         Main.getStorage().set(loc, menu);
-        CommonUtils.sendMessage(commandSender, MessageConfig.SUCCESS.getValue());
+        MessageUtils.sendMessage(commandSender, MessageConfig.SUCCESS.getValue());
         return true;
       } else {
-        CommonUtils.sendMessage(commandSender, Main.LOC_ALREADY_SET.getValue());
+        MessageUtils.sendMessage(commandSender, Main.LOC_ALREADY_SET.getValue());
         return false;
       }
     } else {
-      CommonUtils.sendMessage(commandSender, Main.BLOCK_REQUIRED.getValue());
+      MessageUtils.sendMessage(commandSender, Main.BLOCK_REQUIRED.getValue());
       return false;
     }
   }

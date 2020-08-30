@@ -1,6 +1,6 @@
 package me.hsgamer.bettergui.blocklistener;
 
-import static me.hsgamer.bettergui.Permissions.createPermission;
+import static me.hsgamer.bettergui.util.PermissionUtils.createPermission;
 
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
