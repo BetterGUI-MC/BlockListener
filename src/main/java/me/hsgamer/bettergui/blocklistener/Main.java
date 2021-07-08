@@ -9,12 +9,9 @@ import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 public final class Main extends BetterGUIAddon {
 
-    public static final StringConfigPath LOC_NOT_FOUND = new StringConfigPath(
-            "location-not-found", "&cThe location is not found");
-    public static final StringConfigPath LOC_ALREADY_SET = new StringConfigPath(
-            "location-already-set", "&cThe location is already set");
-    public static final StringConfigPath BLOCK_REQUIRED = new StringConfigPath(
-            "block-required", "&cYou should look at a block");
+    public static final StringConfigPath LOC_NOT_FOUND = new StringConfigPath("location-not-found", "&cThe location is not found");
+    public static final StringConfigPath LOC_ALREADY_SET = new StringConfigPath("location-already-set", "&cThe location is already set");
+    public static final StringConfigPath BLOCK_REQUIRED = new StringConfigPath("block-required", "&cYou should look at a block");
 
     private static BlockStorage storage;
 
@@ -30,7 +27,7 @@ public final class Main extends BetterGUIAddon {
         LOC_NOT_FOUND.setConfig(getInstance().getMessageConfig());
         LOC_ALREADY_SET.setConfig(getInstance().getMessageConfig());
         BLOCK_REQUIRED.setConfig(getInstance().getMessageConfig());
-        getInstance().getMessageConfig().saveConfig();
+        getInstance().getMessageConfig().save();
 
         return true;
     }

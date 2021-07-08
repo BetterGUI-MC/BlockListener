@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.blocklistener;
 
 import me.hsgamer.bettergui.api.addon.BetterGUIAddon;
+import me.hsgamer.bettergui.lib.core.config.Config;
 import org.bukkit.Location;
 
 import java.util.*;
@@ -18,14 +19,20 @@ public class BlockStorage {
 
     @SuppressWarnings("unchecked")
     public void load() {
-        addon.getConfig().getKeys(false).forEach(s -> addon.getConfig().getMapList(s)
-                .forEach(map -> {
-                    Location location = Location.deserialize((Map<String, Object>) map);
-                    locToMenuMap.put(location, s + ".yml");
-                    if (map.containsKey("args")) {
-                        locToArgsMap.put(location, (String) map.get("args"));
-                    }
-                }));
+        Config config = addon.getConfig();
+        for (String s : config.getKeys(false)) {
+            Optional.ofNullable(config.getInstance(s, List.class))
+                    .ifPresent(list -> list.forEach(o -> {
+                        if (o instanceof Map) {
+                            Map<String, Object> map = (Map<String, Object>) o;
+                            Location location = Location.deserialize(map);
+                            locToMenuMap.put(location, s + ".yml");
+                            if (map.containsKey("args")) {
+                                locToArgsMap.put(location, (String) map.get("args"));
+                            }
+                        }
+                    }));
+        }
     }
 
     public void save() {
@@ -36,15 +43,11 @@ public class BlockStorage {
             if (locToArgsMap.containsKey(loc)) {
                 serialized.put("args", locToArgsMap.get(loc));
             }
-
-            if (!map.containsKey(s)) {
-                map.put(s, new ArrayList<>());
-            }
-            map.get(s).add(serialized);
+            map.computeIfAbsent(s, s1 -> new ArrayList<>()).add(serialized);
         });
 
         // Clear old config
-        addon.getConfig().getKeys(false).forEach(s -> addon.getConfig().set(s, null));
+        addon.getConfig().getKeys(false).forEach(addon.getConfig()::remove);
 
         map.forEach((s, list) -> addon.getConfig().set(s, list));
         addon.saveConfig();
