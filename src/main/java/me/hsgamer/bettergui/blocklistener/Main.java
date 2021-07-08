@@ -3,7 +3,10 @@ package me.hsgamer.bettergui.blocklistener;
 import me.hsgamer.bettergui.api.addon.BetterGUIAddon;
 import me.hsgamer.bettergui.blocklistener.command.Remove;
 import me.hsgamer.bettergui.blocklistener.command.Set;
+import me.hsgamer.bettergui.blocklistener.listener.NewBlockListener;
+import me.hsgamer.bettergui.blocklistener.listener.OldBlockListener;
 import me.hsgamer.bettergui.lib.core.config.path.StringConfigPath;
+import me.hsgamer.bettergui.lib.xseries.XMaterial;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
@@ -22,7 +25,7 @@ public final class Main extends BetterGUIAddon {
     @Override
     public boolean onLoad() {
         setupConfig();
-        registerListener(new BlockListener());
+        registerListener(XMaterial.supports(9) ? new NewBlockListener() : new OldBlockListener());
 
         LOC_NOT_FOUND.setConfig(getInstance().getMessageConfig());
         LOC_ALREADY_SET.setConfig(getInstance().getMessageConfig());
