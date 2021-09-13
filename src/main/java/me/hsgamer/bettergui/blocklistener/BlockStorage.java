@@ -14,7 +14,6 @@ public class BlockStorage {
 
     public BlockStorage(BetterGUIAddon addon) {
         this.addon = addon;
-        load();
     }
 
     @SuppressWarnings("unchecked")

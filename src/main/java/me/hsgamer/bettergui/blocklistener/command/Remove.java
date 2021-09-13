@@ -16,10 +16,12 @@ import java.util.Arrays;
 
 public class Remove extends BukkitCommand {
     private static final Permission PERMISSION = new Permission(Permissions.PREFIX + ".removeblock", PermissionDefault.OP);
+    private final Main main;
 
-    public Remove() {
+    public Remove(Main main) {
         super("removeblockmenu", "Remove the linked block", "/removeblockmenu",
                 Arrays.asList("removebmenu", "rbm"));
+        this.main = main;
         setPermission(PERMISSION.getName());
     }
 
@@ -35,8 +37,8 @@ public class Remove extends BukkitCommand {
         Block block = ((Player) commandSender).getTargetBlock(null, 5);
         if (block != null) {
             Location loc = block.getLocation();
-            if (Main.getStorage().contains(loc)) {
-                Main.getStorage().remove(loc);
+            if (main.getStorage().contains(loc)) {
+                main.getStorage().remove(loc);
                 MessageUtils.sendMessage(commandSender, MessageConfig.SUCCESS.getValue());
                 return true;
             } else {

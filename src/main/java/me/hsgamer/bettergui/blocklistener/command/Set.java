@@ -16,10 +16,12 @@ import java.util.Arrays;
 
 public class Set extends BukkitCommand {
     private static final Permission PERMISSION = new Permission(Permissions.PREFIX + ".setblock", PermissionDefault.OP);
+    private final Main main;
 
-    public Set() {
+    public Set(Main main) {
         super("setblockmenu", "Link the target block to a menu", "/setblockmenu <menu> [args]",
                 Arrays.asList("setbmenu", "blockmenu", "sbm"));
+        this.main = main;
         setPermission(PERMISSION.getName());
     }
 
@@ -40,11 +42,11 @@ public class Set extends BukkitCommand {
         Block block = ((Player) commandSender).getTargetBlock(null, 5);
         if (block != null) {
             Location loc = block.getLocation();
-            if (!Main.getStorage().contains(loc)) {
+            if (!main.getStorage().contains(loc)) {
                 if (strings.length >= 2) {
-                    Main.getStorage().setArgs(loc, String.join(" ", Arrays.copyOfRange(strings, 1, strings.length)));
+                    main.getStorage().setArgs(loc, String.join(" ", Arrays.copyOfRange(strings, 1, strings.length)));
                 }
-                Main.getStorage().set(loc, menu);
+                main.getStorage().set(loc, menu);
                 MessageUtils.sendMessage(commandSender, MessageConfig.SUCCESS.getValue());
                 return true;
             } else {

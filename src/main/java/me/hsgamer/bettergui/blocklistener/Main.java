@@ -16,16 +16,16 @@ public final class Main extends BetterGUIAddon {
     public static final StringConfigPath LOC_ALREADY_SET = new StringConfigPath("location-already-set", "&cThe location is already set");
     public static final StringConfigPath BLOCK_REQUIRED = new StringConfigPath("block-required", "&cYou should look at a block");
 
-    private static BlockStorage storage;
+    private final BlockStorage storage = new BlockStorage(this);
 
-    public static BlockStorage getStorage() {
+    public BlockStorage getStorage() {
         return storage;
     }
 
     @Override
     public boolean onLoad() {
         setupConfig();
-        registerListener(XMaterial.supports(9) ? new NewBlockListener() : new OldBlockListener());
+        registerListener(XMaterial.supports(9) ? new NewBlockListener(this) : new OldBlockListener(this));
 
         LOC_NOT_FOUND.setConfig(getInstance().getMessageConfig());
         LOC_ALREADY_SET.setConfig(getInstance().getMessageConfig());
@@ -37,9 +37,9 @@ public final class Main extends BetterGUIAddon {
 
     @Override
     public void onEnable() {
-        storage = new BlockStorage(this);
-        registerCommand(new Set());
-        registerCommand(new Remove());
+        storage.load();
+        registerCommand(new Set(this));
+        registerCommand(new Remove(this));
     }
 
     @Override
