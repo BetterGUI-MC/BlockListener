@@ -1,9 +1,9 @@
 package me.hsgamer.bettergui.blocklistener.command;
 
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.blocklistener.Main;
-import me.hsgamer.bettergui.config.MessageConfig;
-import me.hsgamer.bettergui.lib.core.bukkit.utils.MessageUtils;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -31,31 +31,29 @@ public class Set extends BukkitCommand {
             return false;
         }
         if (!(commandSender instanceof Player)) {
-            MessageUtils.sendMessage(commandSender, MessageConfig.PLAYER_ONLY.getValue());
+            MessageUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().playerOnly);
             return false;
         }
-        if (strings.length <= 0) {
-            MessageUtils.sendMessage(commandSender, MessageConfig.MENU_REQUIRED.getValue());
+        if (strings.length == 0) {
+            MessageUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().menuRequired);
             return false;
         }
         String menu = strings[0];
         Block block = ((Player) commandSender).getTargetBlock(null, 5);
-        if (block != null) {
-            Location loc = block.getLocation();
-            if (!main.getStorage().contains(loc)) {
-                if (strings.length >= 2) {
-                    main.getStorage().setArgs(loc, String.join(" ", Arrays.copyOfRange(strings, 1, strings.length)));
-                }
-                main.getStorage().set(loc, menu);
-                MessageUtils.sendMessage(commandSender, MessageConfig.SUCCESS.getValue());
-                return true;
-            } else {
-                MessageUtils.sendMessage(commandSender, Main.LOC_ALREADY_SET.getValue());
-                return false;
-            }
-        } else {
-            MessageUtils.sendMessage(commandSender, Main.BLOCK_REQUIRED.getValue());
+        if (block == null) {
+            MessageUtils.sendMessage(commandSender, main.getMessageConfig().blockRequired);
             return false;
         }
+        Location loc = block.getLocation();
+        if (main.getStorage().contains(loc)) {
+            MessageUtils.sendMessage(commandSender, main.getMessageConfig().locAlreadySet);
+            return false;
+        }
+        if (strings.length >= 2) {
+            main.getStorage().setArgs(loc, String.join(" ", Arrays.copyOfRange(strings, 1, strings.length)));
+        }
+        main.getStorage().set(loc, menu);
+        MessageUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().success);
+        return true;
     }
 }

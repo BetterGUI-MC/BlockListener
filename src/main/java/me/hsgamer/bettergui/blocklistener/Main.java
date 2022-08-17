@@ -1,56 +1,60 @@
 package me.hsgamer.bettergui.blocklistener;
 
-import me.hsgamer.bettergui.api.addon.BetterGUIAddon;
 import me.hsgamer.bettergui.blocklistener.command.Remove;
 import me.hsgamer.bettergui.blocklistener.command.Set;
 import me.hsgamer.bettergui.blocklistener.listener.NewBlockListener;
 import me.hsgamer.bettergui.blocklistener.listener.OldBlockListener;
-import me.hsgamer.bettergui.lib.core.config.path.StringConfigPath;
-import me.hsgamer.bettergui.lib.xseries.XMaterial;
+import me.hsgamer.hscore.bukkit.addon.PluginAddon;
+import me.hsgamer.hscore.bukkit.config.BukkitConfig;
+import me.hsgamer.hscore.bukkit.utils.VersionUtils;
+import me.hsgamer.hscore.config.Config;
+
+import java.io.File;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
-public final class Main extends BetterGUIAddon {
+public final class Main extends PluginAddon {
 
-    public static final StringConfigPath LOC_NOT_FOUND = new StringConfigPath("location-not-found", "&cThe location is not found");
-    public static final StringConfigPath LOC_ALREADY_SET = new StringConfigPath("location-already-set", "&cThe location is already set");
-    public static final StringConfigPath BLOCK_REQUIRED = new StringConfigPath("block-required", "&cYou should look at a block");
-
+    private final ExtraMessageConfig messageConfig = new ExtraMessageConfig(new BukkitConfig(new File(getDataFolder(), "messages.yml")));
+    private final Config config = new BukkitConfig(new File(getDataFolder(), "config.yml"));
     private final BlockStorage storage = new BlockStorage(this);
+    private final Set set = new Set(this);
+    private final Remove remove = new Remove(this);
 
     public BlockStorage getStorage() {
         return storage;
     }
 
     @Override
-    public boolean onLoad() {
-        setupConfig();
-        registerListener(XMaterial.supports(9) ? new NewBlockListener(this) : new OldBlockListener(this));
-
-        LOC_NOT_FOUND.setConfig(getInstance().getMessageConfig());
-        LOC_ALREADY_SET.setConfig(getInstance().getMessageConfig());
-        BLOCK_REQUIRED.setConfig(getInstance().getMessageConfig());
-        getInstance().getMessageConfig().save();
-
-        return true;
-    }
-
-    @Override
     public void onEnable() {
+        config.setup();
+        messageConfig.setup();
+        getInstance().registerListener(VersionUtils.isAtLeast(9) ? new NewBlockListener(this) : new OldBlockListener(this));
         storage.load();
-        registerCommand(new Set(this));
-        registerCommand(new Remove(this));
+        getInstance().registerCommand(set);
+        getInstance().registerCommand(remove);
     }
 
     @Override
     public void onDisable() {
         storage.save();
+        getInstance().getCommandManager().unregister(set);
+        getInstance().getCommandManager().unregister(remove);
     }
 
     @Override
     public void onReload() {
         storage.save();
-        reloadConfig();
+        config.reload();
+        messageConfig.reload();
         storage.load();
+    }
+
+    public Config getConfig() {
+        return config;
+    }
+
+    public ExtraMessageConfig getMessageConfig() {
+        return messageConfig;
     }
 }

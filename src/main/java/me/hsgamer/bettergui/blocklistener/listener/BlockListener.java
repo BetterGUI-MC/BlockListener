@@ -1,8 +1,7 @@
 package me.hsgamer.bettergui.blocklistener.listener;
 
 import me.hsgamer.bettergui.blocklistener.Main;
-import me.hsgamer.bettergui.config.MessageConfig;
-import me.hsgamer.bettergui.lib.core.bukkit.utils.MessageUtils;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -40,7 +39,7 @@ public abstract class BlockListener implements Listener {
             event.setCancelled(true);
             getInstance().getMenuManager().openMenu(menu, player, args, false);
         } else {
-            MessageUtils.sendMessage(player, MessageConfig.MENU_NOT_FOUND.getValue());
+            MessageUtils.sendMessage(player, getInstance().getMessageConfig().menuNotFound);
         }
     }
 }

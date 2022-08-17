@@ -1,24 +1,22 @@
 package me.hsgamer.bettergui.blocklistener;
 
-import me.hsgamer.bettergui.api.addon.BetterGUIAddon;
-import me.hsgamer.bettergui.lib.core.config.Config;
+import me.hsgamer.hscore.config.Config;
 import org.bukkit.Location;
 
 import java.util.*;
 
 public class BlockStorage {
-
     private final Map<Location, String> locToMenuMap = new HashMap<>();
     private final Map<Location, String> locToArgsMap = new HashMap<>();
-    private final BetterGUIAddon addon;
+    private final Main main;
 
-    public BlockStorage(BetterGUIAddon addon) {
-        this.addon = addon;
+    public BlockStorage(Main main) {
+        this.main = main;
     }
 
     @SuppressWarnings("unchecked")
     public void load() {
-        Config config = addon.getConfig();
+        Config config = main.getConfig();
         for (String s : config.getKeys(false)) {
             Optional.ofNullable(config.getInstance(s, List.class))
                     .ifPresent(list -> list.forEach(o -> {
@@ -46,10 +44,10 @@ public class BlockStorage {
         });
 
         // Clear old config
-        addon.getConfig().getKeys(false).forEach(addon.getConfig()::remove);
+        main.getConfig().getKeys(false).forEach(main.getConfig()::remove);
 
-        map.forEach((s, list) -> addon.getConfig().set(s, list));
-        addon.saveConfig();
+        map.forEach((s, list) -> main.getConfig().set(s, list));
+        main.getConfig().save();
     }
 
     public void set(Location loc, String menu) {
