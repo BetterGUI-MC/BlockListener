@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.blocklistener;
 
 import me.hsgamer.hscore.config.Config;
+import me.hsgamer.hscore.config.PathString;
 import org.bukkit.Location;
 
 import java.util.*;
@@ -17,13 +18,13 @@ public class BlockStorage {
     @SuppressWarnings("unchecked")
     public void load() {
         Config config = main.getConfig();
-        for (String s : config.getKeys(false)) {
-            Optional.ofNullable(config.getInstance(s, List.class))
+        for (PathString pathString : config.getKeys(false)) {
+            Optional.ofNullable(config.getInstance(pathString, List.class))
                     .ifPresent(list -> list.forEach(o -> {
                         if (o instanceof Map) {
                             Map<String, Object> map = (Map<String, Object>) o;
                             Location location = Location.deserialize(map);
-                            locToMenuMap.put(location, s + ".yml");
+                            locToMenuMap.put(location, PathString.toPath(pathString) + ".yml");
                             if (map.containsKey("args")) {
                                 locToArgsMap.put(location, (String) map.get("args"));
                             }
@@ -33,14 +34,14 @@ public class BlockStorage {
     }
 
     public void save() {
-        Map<String, List<Map<String, Object>>> map = new HashMap<>();
+        Map<PathString, List<Map<String, Object>>> map = new HashMap<>();
         locToMenuMap.forEach((loc, s) -> {
             s = s.replace(".yml", "");
             Map<String, Object> serialized = loc.serialize();
             if (locToArgsMap.containsKey(loc)) {
                 serialized.put("args", locToArgsMap.get(loc));
             }
-            map.computeIfAbsent(s, s1 -> new ArrayList<>()).add(serialized);
+            map.computeIfAbsent(new PathString(s), s1 -> new ArrayList<>()).add(serialized);
         });
 
         // Clear old config
@@ -76,5 +77,13 @@ public class BlockStorage {
             return locToArgsMap.get(loc).split(" ");
         }
         return new String[0];
+    }
+
+    public Map<Location, String> getLocToArgsMap() {
+        return locToArgsMap;
+    }
+
+    public Map<Location, String> getLocToMenuMap() {
+        return locToMenuMap;
     }
 }
